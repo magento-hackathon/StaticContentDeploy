@@ -25,3 +25,5 @@ the Magento core team itself (according to Anton Krill).
 - **Separating different deploy types**: Within the generic deployer,
   various files are copied (images, JavaScript, plain CSS, LESS), while
 actually a frontend developer might only want to tune a specific type.
+
+This repository contains a `StaticContentDeployDebugger` module to allow you to log (with timings) which files are being copied where. Simply copy the module to `app/code/` and it should log to `var/system.log`.
