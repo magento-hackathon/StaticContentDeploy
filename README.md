@@ -29,7 +29,13 @@ the Magento core team itself (according to Anton Krill).
   various files are copied (images, JavaScript, plain CSS, LESS), while
 actually a frontend developer might only want to tune a specific type.
 
-## Module StaticContentDeployDebugger
+## Step: Pull Request for adding arguments to deployment command
+@denisristic has created a PR for the Magento 2 core to add various arguments to the deployment command, so that a deploy only copies for instance theming or JavaScript.
+
+## Step: Pull Request for adding MD5 checksums
+@jissereitsma has created a PR for the Magento 2 core that will check whether a file is modified or not. The original deploy only allows for file copying if the destination does not exist. This PR performs a MD5 check to see if the original is different from the deployed file. Together with @denisristic it is a perfect combination to determine which file is copied where, instead of copying all files at once.
+
+## Step: Module StaticContentDeployDebugger
 This repository contains a `StaticContentDeployDebugger` module to allow you to log (with timings) which files are being copied where. Simply copy the module to `app/code/` and it should log to `var/system.log`. Do NOT enable this module on a live site.
 
 The module dumps for each static deploy copy a line to the `system.log` mentioning the time it took to copy things (in milliseconds), the original file and the destination file. Timestamps should be around 0.2 - 0.3 ms. If it is more, there is an issue with your disk (or optimization of the filesystem). If the file already exists in the `pub/static` folder, no file is copied and log entry is made either.
