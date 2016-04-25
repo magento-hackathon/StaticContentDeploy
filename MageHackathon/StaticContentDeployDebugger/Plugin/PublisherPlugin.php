@@ -13,9 +13,19 @@ class PublisherPlugin
     protected $filesystem;
 
     /**
+     * @var \Magento\Framework\File\Size
+     */
+    protected $fileSize;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var Asset\LocalInterface
+     */
+    protected $asset;
 
     /**
      * @var string
@@ -34,22 +44,19 @@ class PublisherPlugin
 
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
+        \Magento\Framework\File\Size $fileSize,
         \Psr\Log\LoggerInterface $logger
     )
     {
         $this->filesystem = $filesystem;
+        $this->fileSize = $fileSize;
         $this->logger = $logger;
     }
 
     public function beforePublish(Publisher $subject, Asset\LocalInterface $asset)
     {
-        $dir = $this->filesystem->getDirectoryRead(DirectoryList::STATIC_VIEW);
-        if ($dir->isExist($asset->getPath())) {
-            return array($asset);
-        }
-
-        $rootDir = $this->filesystem->getDirectoryWrite(DirectoryList::ROOT);
-        $this->source = $rootDir->getRelativePath($asset->getSourceFile());
+        $this->asset = $asset;
+        $this->source = $asset->getSourceFile();
         $this->destination = $asset->getPath();
         $this->timer = microtime(true);
         $this->logger->info('test');
@@ -64,11 +71,14 @@ class PublisherPlugin
         }
 
         $timeElapsed = round(microtime(true) * 1000 - $this->timer * 1000, 3).'ms';
+        $sourceFile = $this->asset->getSourceFile();
+        $sourceSize = filesize($sourceFile);
+        $fileSize = $this->fileSize->getFileSizeInMb($sourceSize, 3);
 
         $message = '[static deploy]';
-        $message .= '['.$timeElapsed.'] ';
-        $message .= 'from '. $this->source;
-        $message .= 'to '. $this->destination;
+        $message .= '['.$timeElapsed.' / '.$fileSize.'Mb]';
+        $message .= ' from '. $this->source;
+        $message .= ' to '. $this->destination;
         $this->logger->info($message);
 
         return $return;
