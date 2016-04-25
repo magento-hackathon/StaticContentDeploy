@@ -32,4 +32,4 @@ actually a frontend developer might only want to tune a specific type.
 ## Module StaticContentDeployDebugger
 This repository contains a `StaticContentDeployDebugger` module to allow you to log (with timings) which files are being copied where. Simply copy the module to `app/code/` and it should log to `var/system.log`. Do NOT enable this module on a live site.
 
-The module dumps for each static deploy copy a line to the `system.log` mentioning the time it took to copy things (in milliseconds), the original file and the destination file. Timestamps should be around 0.2 - 0.3 ms. If it is more, there is an issue with your disk (or optimization of the filesystem).
+The module dumps for each static deploy copy a line to the `system.log` mentioning the time it took to copy things (in milliseconds), the original file and the destination file. Timestamps should be around 0.2 - 0.3 ms. If it is more, there is an issue with your disk (or optimization of the filesystem). If the file already exists in the `pub/static` folder, no file is copied and log entry is made either.
